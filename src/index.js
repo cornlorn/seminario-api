@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 import express from "express";
 import { database } from "./config/database.js";
+import userRoutes from "./routes/user.route.js";
 
 dotenv.config();
 
@@ -17,6 +18,8 @@ app.use(express.json());
 app.get("/health", (request, response) => {
     return response.json({ status: "ok" });
 });
+
+app.use("/users", userRoutes);
 
 app.listen(PORT, async () => {
     console.log(`Server is running on http://localhost:${PORT}`);
