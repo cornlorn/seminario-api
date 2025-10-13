@@ -1,27 +1,9 @@
 import { Router } from "express";
 import { createUser } from "../controllers/user.controller.js";
-import { body } from "express-validator";
+import { createUserValidation } from "../validators/user.validator.js";
 
 const router = Router();
 
-router.post(
-    "/create",
-    body("name")
-        .exists()
-        .withMessage("Name is required")
-        .isString()
-        .withMessage("Name must be a string")
-        .notEmpty()
-        .withMessage("Name cannot be empty"),
-
-    body("role")
-        .exists()
-        .withMessage("Role is required")
-        .isInt()
-        .withMessage("Role must be an integer")
-        .notEmpty()
-        .withMessage("Role cannot be empty"),
-    createUser,
-);
+router.post("/create", createUserValidation, createUser);
 
 export default router;
