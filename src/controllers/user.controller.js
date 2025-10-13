@@ -13,7 +13,7 @@ export const createUser = async (request, response) => {
     if (!errors.isEmpty()) {
         return response
             .status(400)
-            .json(errors.array().map((error) => error.msg));
+            .json({ errors: errors.array().map((error) => error.msg) });
     }
 
     try {
