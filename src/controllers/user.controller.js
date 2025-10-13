@@ -1,3 +1,4 @@
+import { validationResult } from "express-validator";
 import Role from "../models/role.model.js";
 import User from "../models/user.model.js";
 
@@ -7,32 +8,28 @@ import User from "../models/user.model.js";
  */
 
 export const createUser = async (request, response) => {
+    const errors = validationResult(request);
+
+    if (!errors.isEmpty()) {
+        return response
+            .status(400)
+            .json(errors.array().map((error) => error.msg));
+    }
+
     try {
         let { name, role } = request.body;
 
-        const errors = [];
+        const roleExists = await Role.findByPk(role);
 
-        if (!name) errors.push("Name is required");
-
-        if (!role) errors.push("Role is required");
-
-        if (typeof name !== "string") errors.push("Name must be a string");
-
-        if (typeof role !== "string") errors.push("Role must be a string");
-
-        if (errors.length > 0) return response.status(400).json(errors);
-
-        const roleCheck = await Role.findOne({ where: { name: role } });
-
-        if (!roleCheck)
+        if (!roleExists) {
             return response.status(404).json({ error: "Role not found" });
+        }
 
-        const user = await User.create({
-            name,
-            role: roleCheck.id,
-        });
+        await User.create({ name, role });
 
-        response.status(201).json({ message: "User created successfully" });
+        return response
+            .status(201)
+            .json({ message: "User created successfully" });
     } catch (error) {
         console.log("Unable to create user:", error);
         response.status(500).json({ error: "Internal server error" });
