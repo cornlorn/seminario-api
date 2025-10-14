@@ -2,6 +2,29 @@ import { validationResult } from "express-validator";
 import Role from "../models/role.model.js";
 import User from "../models/user.model.js";
 
+User.belongsTo(Role, {
+    foreignKey: "role",
+    as: "userRole",
+});
+
+/**
+ * @param {import('express').Request} request
+ * @param {import('express').Response} response
+ */
+
+export const getUsers = async (request, response) => {
+    try {
+        const users = await User.findAll({
+            include: { model: Role, as: "userRole", attributes: ["name"] },
+        });
+
+        return response.json(users);
+    } catch (error) {
+        console.log("Unable to retrieve users:", error);
+        return response.status(500).json({ error: "Internal server error" });
+    }
+};
+
 /**
  * @param {import('express').Request} request
  * @param {import('express').Response} response
