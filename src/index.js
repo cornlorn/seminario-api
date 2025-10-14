@@ -1,10 +1,8 @@
-import dotenv from "dotenv";
+import "dotenv/config";
 import express from "express";
 import morgan from "morgan";
 import { database } from "./config/database.js";
 import userRoutes from "./routes/user.route.js";
-
-dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
