@@ -95,7 +95,12 @@ export const createBook = async (request, response) => {
 
         const book = await Book.create({ name, author, genre });
 
-        return response.status(201).json(book);
+        return response.status(201).json({
+            id: book.id,
+            name: book.name,
+            author: authorExists.name,
+            genre: genreExists.name,
+        });
     } catch (error) {
         return response.status(500).json({ error: "Internal Server Error" });
     }

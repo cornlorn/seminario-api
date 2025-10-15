@@ -5,23 +5,34 @@ import {
     createGenre,
     viewBooks,
 } from "../controllers/library.controller.js";
-import { body } from "express-validator";
 
-function requiredField(field, message) {
-    return body(field)
-        .notEmpty()
-        .withMessage(message || `${field} is required`);
-}
+import {
+    requiredField,
+    stringField,
+    numericField,
+} from "../validators/library.validator.js";
 
 const router = Router();
 
-router.post("/authors", [requiredField("name")], createAuthor);
+router.post(
+    "/authors",
+    requiredField(["name"]),
+    stringField(["name"]),
+    createAuthor,
+);
 
-router.post("/genres", [requiredField("name")], createGenre);
+router.post(
+    "/genres",
+    requiredField(["name"]),
+    stringField(["name"]),
+    createGenre,
+);
 
 router.post(
     "/books",
-    [requiredField("name"), requiredField("author"), requiredField("genre")],
+    requiredField(["name", "author", "genre"]),
+    stringField("name"),
+    numericField(["author", "genre"]),
     createBook,
 );
 
